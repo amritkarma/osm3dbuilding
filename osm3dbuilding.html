@@ -12,6 +12,7 @@
             var zoom=17;
             var map;
             var layer;
+            var geojson_format = new OpenLayers.Format.GeoJSON();
             proj900913 = new OpenLayers.Projection("EPSG:900913");
             proj4326 = new OpenLayers.Projection("EPSG:4326");
  
@@ -36,7 +37,7 @@
                 var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
  
                 map.setCenter(lonLat, zoom);
-				alert("map centered");
+				        alert("map centered");
  
                 //Initialise the vector layer using OpenLayers.Format.Geojson
                 layer1 = new OpenLayers.Layer.Vector("buildingss", {
@@ -48,8 +49,31 @@
                     projection: new OpenLayers.Projection("EPSG:4326")
                 });
                 // map.addLayer(layer1);
+                 
+                //webdri building data
+                building_url = "http://overpass-api.de/api/interpreter?data=(way['building'~'kindergarten|school|college|hospital|clinic|nursing_home'](bbox);node(w););out body qt;"; //main working url
+                    //var data_url = "Ktm valley 2013-01-01_10-47.osm";
+                
+                building = new OpenLayers.Layer.Vector("Building", {
+                  strategies: [new OpenLayers.Strategy.BBOX({ratio:0.5}),new OpenLayers.Strategy.Refresh()],
+                  protocol: new OpenLayers.Protocol.HTTP({
+                    url: building_url,   //<-- relative or absolute URL to your .osm file
+                    format: new OpenLayers.Format.OSM()
+                  }),
+                  projection: new OpenLayers.Projection("EPSG:4326"),
+                  styleMap: new OpenLayers.StyleMap({'default':new OpenLayers.Style({'strokeWidth': 1,fillColor:"grey",'title':'${oid}'})})
+                });
+
+                map.addLayer(building);
+                // debugger;
+
+                geojson_string = geojson_format.write(building.features);
+
+                geojson = geojson_format.read(geojson_string);
+
 
                 //example geojson data
+                /*
                 var geoJSONData = {
                     "type": "FeatureCollection",
                     "features": [{
@@ -157,8 +181,10 @@
                         }
                     }]
                 };
+                */
 
                 //my overpass osm data converted to geojson
+                /*
                 var mygeojson = {
                   "type": "FeatureCollection",
                   "generator": "overpass-turbo",
@@ -8553,13 +8579,15 @@
                     }
                   ]
                 }
+                */
+               
                 // osmb = new OSMBuildings(map);
                 // osmb.setData(geoJSONData);
                 // osmb.setData("data.buildings.baluwatar.geojson");
                 layer2 = new OpenLayers.Layer.Buildings();
                 map.addLayer(layer2);
-                layer2.osmb.geoJSON(mygeojson);
-                
+                // layer2.osmb.geoJSON(mygeojson);
+                layer2.osmb.geoJSON(geojson);
                 // layer2.osmb.geoJSON(geoJSONData);
                 // layer2.osmb.geoJSON("data.buildings.baluwatar.geojson");
                 // layer2.osmb.render();
