@@ -2,8 +2,9 @@
     <head>
         <title></title>
         <script src="../OpenLayers-2.12/lib/OpenLayers.js"></script>
-        <script type="text/javascript" src="../OpenLayers-2.12/addins/osmbuildings.debug.v0.1.8.js"></script>
+        <!-- // <script type="text/javascript" src="../OpenLayers-2.12/addins/osmbuildings.debug.v0.1.8.js"></script> -->
         <!-- // <script type="text/javascript" src="../OpenLayers-2.12/addins/osmbuildings.debug.v0.1.9.js"></script> -->
+        // <script type="text/javascript" src="../OpenLayers-2.12/addins/OSMBuildings-OpenLayers.debug.js"></script>
         <script type="text/javascript">
             var lat=27.72222;
             // var lat=52.49480;
@@ -51,7 +52,7 @@
                 // map.addLayer(layer1);
                  
                 //webdri building data
-                building_url = "http://overpass-api.de/api/interpreter?data=(way['building'~'kindergarten|school|college|hospital|clinic|nursing_home'](bbox);node(w););out body qt;"; //main working url
+                building_url = "http://overpass-api.de/api/interpreter?data=(way['building'](bbox);node(w););out body qt;"; //main working url
                     //var data_url = "Ktm valley 2013-01-01_10-47.osm";
                 
                 building = new OpenLayers.Layer.Vector("Building", {
@@ -71,9 +72,11 @@
 
                 geojson = geojson_format.read(geojson_string);
 
+                console.log("geojson",geojson);
+
 
                 //example geojson data
-                /*
+                
                 var geoJSONData = {
                     "type": "FeatureCollection",
                     "features": [{
@@ -181,10 +184,10 @@
                         }
                     }]
                 };
-                */
+                
 
                 //my overpass osm data converted to geojson
-                /*
+                
                 var mygeojson = {
                   "type": "FeatureCollection",
                   "generator": "overpass-turbo",
@@ -8579,15 +8582,18 @@
                     }
                   ]
                 }
-                */
+                
                
-                // osmb = new OSMBuildings(map);
+                osmb = new OSMBuildings(map);
                 // osmb.setData(geoJSONData);
+                osmb.setData(mygeojson);
                 // osmb.setData("data.buildings.baluwatar.geojson");
-                layer2 = new OpenLayers.Layer.Buildings();
-                map.addLayer(layer2);
+                
+                // layer2 = new OpenLayers.Layer.Buildings();
+                // map.addLayer(layer2);
+                
                 // layer2.osmb.geoJSON(mygeojson);
-                layer2.osmb.geoJSON(geojson);
+                // layer2.osmb.geoJSON(geojson);
                 // layer2.osmb.geoJSON(geoJSONData);
                 // layer2.osmb.geoJSON("data.buildings.baluwatar.geojson");
                 // layer2.osmb.render();
