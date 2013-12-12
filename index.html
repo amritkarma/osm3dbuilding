@@ -24,7 +24,7 @@
   // var lat=52.49480;
   var lon = 85.33138;
   // var lon=13.42857;
-  var zoom=17;
+  var zoom=18;
   var map;
   var layer;
   var geojson_format = new OpenLayers.Format.GeoJSON();
@@ -88,7 +88,8 @@ function init(){
     numZoomLevels: 19,
     units: 'm',
     projection: new OpenLayers.Projection("EPSG:4326"),
-    displayProjection: new OpenLayers.Projection("EPSG:4326")
+    displayProjection: new OpenLayers.Projection("EPSG:4326"),
+    restrictedExtent: new OpenLayers.Bounds(85.321970,27.717840,85.347290,27.740936).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"))
   });
   // map.addLayer(new OpenLayers.Layer.OSM("OSM",null,{attribution: "&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors (ODbL)"}));
 
@@ -150,7 +151,7 @@ function init(){
                           if (typeof(feature.features[i].attributes["building:level"])!="number"){
                             feature.features[i].attributes["height"] = 50;
                           } else {
-                            feature.features[i].attributes["height"] = feature.features[i].attributes["building:level"] * 30;
+                            feature.features[i].attributes["height"] = feature.features[i].attributes["building:level"] * 10;
                           }
 
                           feature.features[i].geometry.transform(proj900913,proj4326);
@@ -167,43 +168,43 @@ function init(){
                                 // console.log(attributes["building:structure"]);
                                 attributes["wallColor"] = 'rgba(204,204,204,1)';
                                 attributes["roofColor"] = attributes["wallColor"];
-                                attributes["shadows"] = "false";
+                                
                               }
                               else if(attributes["building:structure"].match("load_bearing")){
                                 // console.log(attributes["building:structure"]);
                                 attributes["wallColor"] = 'rgba(204,079,045,1)';
                                 attributes["roofColor"] = attributes["wallColor"];
-                                attributes["shadows"] = "false";
+                                
                               }
                               else if(attributes["building:structure"].match("adobe")){
                                 // console.log(attributes["building:structure"]);
                                 attributes["wallColor"] = 'rgba(225,192,131,1)';
                                 attributes["roofColor"] = attributes["wallColor"];
-                                attributes["shadows"] = "false";
+                                
                               }
                               else{
                                 attributes["wallColor"] = 'rgba(255,000,000,1)';
                                 attributes["roofColor"] = attributes["wallColor"];
-                                attributes["shadows"] = "false"; 
+                                 
                               }
                               // for educational and health buildings use different color
                               // debugger;
                               if(attributes["building"]=='school' || attributes["building"]=='college' || attributes["building"]=='hospital' || attributes["building"]=='clinic' || attributes["building"]=='dentist'){
                                 attributes["wallColor"] = 'rgba(000,255,000,0)';
                                 attributes["roofColor"] = attributes["wallColor"];
-                                attributes["shadows"] = "false";
+                                
                               }
                             }
                             else{
                               attributes["wallColor"] = 'rgb(255,200,200)';
                               attributes["roofColor"] = attributes["wallColor"];
-                              attributes["shadows"] = "false"; 
+                               
                             }
                           }
                           geojson_string = geojson_format.write(building.features);
-                          console.log(geojson_string);
+                          // console.log(geojson_string);
                           layer2.setData(JSON.parse(geojson_string));
-                        // layer2.setStyle({shadows:false});
+                          layer2.setStyle({shadows:false});
                         // layer2.osmb.geoJSON(JSON.parse(geojson_string));
                         // layer2.osmb.setStyle({ color: '#ffff72',roofColor:'#ffff72'});
                       }
@@ -214,6 +215,7 @@ function init(){
             <body onload="init()">
               <div id="map" class="smallmap">
                 <h3>Full Exposure Survey in Kathmandu: 3D Visualization (Based on No. of Storeys)</h3>
+                Currently In Kathmandu Municipality (Ward 4 and 5 only)
                 <div id="statusline" style="font-size:12pt; font-weight:bold; font-family:sans-serif">No status set yet.
                 </div>
                 </div>
