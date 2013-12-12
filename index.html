@@ -15,6 +15,7 @@
     z-index:15000;
   }
   </style>
+  <link rel="stylesheet" type="text/css" href="stylesheets/layer-buttons.css"/>
   <script src="http://openlayers.org/api/2.12/OpenLayers.js" type="text/javascript"></script>
   <!-- // <script src="../../openlayers-2.12/OpenLayers.debug.js" type="text/javascript"></script> -->
   <script type="text/javascript" src="javascripts/osmbuildings.debug.v0.1.9.js"></script>
@@ -32,6 +33,9 @@
   var zoom_data_limit= 13,
   proj900913 = new OpenLayers.Projection("EPSG:900913");
   proj4326 = new OpenLayers.Projection("EPSG:4326");
+
+  building_color = {"load_bearing_structure":'rgba(204,079,045,1)',"framed_structure":'rgba(150,145,129,1)',"adobe":'rgba(225,192,131,1)',"not_surveyed":'rgb(255,200,200)',"educational":'rgba(000,255,000,1)',"health":'rgba(255,000,000,1)'}
+
 
   function setStatusText(text){
     var html_node = document.getElementById("statusline");
@@ -166,37 +170,40 @@ function init(){
                               if(attributes["building:structure"].match("reinforced_concrete")){
                                 // alert();
                                 // console.log(attributes["building:structure"]);
-                                attributes["wallColor"] = 'rgba(204,204,204,1)';
+                                attributes["wallColor"] = building_color["framed_structure"];
                                 attributes["roofColor"] = attributes["wallColor"];
                                 
                               }
                               else if(attributes["building:structure"].match("load_bearing")){
                                 // console.log(attributes["building:structure"]);
-                                attributes["wallColor"] = 'rgba(204,079,045,1)';
+                                attributes["wallColor"] = building_color["load_bearing_structure"];
                                 attributes["roofColor"] = attributes["wallColor"];
                                 
                               }
                               else if(attributes["building:structure"].match("adobe")){
                                 // console.log(attributes["building:structure"]);
-                                attributes["wallColor"] = 'rgba(225,192,131,1)';
+                                attributes["wallColor"] = building_color["adobe"];
                                 attributes["roofColor"] = attributes["wallColor"];
                                 
                               }
                               else{
-                                attributes["wallColor"] = 'rgba(255,000,000,1)';
+                                attributes["wallColor"] = building_color["not_surveyed"];
                                 attributes["roofColor"] = attributes["wallColor"];
                                  
                               }
                               // for educational and health buildings use different color
                               // debugger;
-                              if(attributes["building"]=='school' || attributes["building"]=='college' || attributes["building"]=='hospital' || attributes["building"]=='clinic' || attributes["building"]=='dentist'){
-                                attributes["wallColor"] = 'rgba(000,255,000,0)';
-                                attributes["roofColor"] = attributes["wallColor"];
-                                
-                              }
+                              // if(attributes["building"]=='school' || attributes["building"]=='college'){
+                              //   attributes["wallColor"] = building_color["educational"];
+                              //   attributes["roofColor"] = attributes["wallColor"];
+                              // }
+                              // else if(attributes["building"]=='hospital' || attributes["building"]=='clinic' || attributes["building"]=='dentist'){
+                              //   attributes["wallColor"] = building_color["health"];
+                              //   attributes["roofColor"] = attributes["wallColor"];
+                              // }
                             }
                             else{
-                              attributes["wallColor"] = 'rgb(255,200,200)';
+                              attributes["wallColor"] = building_color["not_surveyed"];
                               attributes["roofColor"] = attributes["wallColor"];
                                
                             }
@@ -218,7 +225,31 @@ function init(){
                 Currently In Kathmandu Municipality (Ward 4 and 5 only)
                 <div id="statusline" style="font-size:12pt; font-weight:bold; font-family:sans-serif">No status set yet.
                 </div>
-                </div>
-            </div>
+              </div>
+              <div style="position:absolute; top:20px; right:80px; font:aerial; fontcolor=blue; z-index:999;">
+                <label class="classname">
+                <input type="checkbox" name="togglelayer" checked onClick="map.removeLayer(healthfacilities);map.addLayer(odri_schools);">Framed Structure</input>
+                </label>
+              <br>
+                <label class="classname">
+                <input type="checkbox" name="togglelayer" checked onClick="map.removeLayer(odri_schools);map.addLayer(healthfacilities);">Load Bearing Structure</input>
+                </label>
+              <br>
+                <label class="classname">
+                <input type="checkbox" name="togglelayer" checked onClick="map.removeLayer(odri_schools);map.addLayer(healthfacilities);">Adobe</input>
+                </label>
+              <br>
+                <label class="classname">
+                <input type="checkbox" name="togglelayer" checked onClick="map.removeLayer(odri_schools);map.addLayer(healthfacilities);">Not Surveyed</input>
+                </label>
+              </div>
+              <script type="text/javascript">
+                var options = document.getElementsByClassName("classname");
+                for(i=0;i<options.length;i++){
+                  structure = options[i].textContent.trim().replace(/ /g,"_").toLowerCase();
+                  options[i].style.backgroundColor = building_color[structure];
+                  console.log(structure);
+                }
+              </script>
           </body>
           </html>
