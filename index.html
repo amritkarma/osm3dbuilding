@@ -153,7 +153,7 @@ function init(){
                         console.log('feature added');
                         for (i = 0; i < feature.features.length; i++) {
                           if (typeof(feature.features[i].attributes["building:level"])!="number"){
-                            feature.features[i].attributes["height"] = 50;
+                            feature.features[i].attributes["height"] = 20;
                           } else {
                             feature.features[i].attributes["height"] = feature.features[i].attributes["building:level"] * 10;
                           }
